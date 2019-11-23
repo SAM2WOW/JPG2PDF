@@ -9,6 +9,7 @@
       <property name="column">0</property>
       <property name="propagate">True</property>
       <property name="row">0</property>
+      <property name="sticky">ew</property>
     </layout>
     <child>
       <object class="ttk.Labelframe" id="File_Select">
@@ -125,11 +126,12 @@
     <child>
       <object class="ttk.Labelframe" id="Settings">
         <property name="height">200</property>
-        <property name="labelanchor">nw</property>
         <property name="text" translatable="yes">3. Settings</property>
         <property name="width">200</property>
         <layout>
           <property name="column">0</property>
+          <property name="padx">5</property>
+          <property name="pady">5</property>
           <property name="propagate">True</property>
           <property name="row">2</property>
           <property name="sticky">ew</property>
@@ -165,6 +167,50 @@
       </object>
     </child>
     <child>
+      <object class="ttk.Labelframe" id="Name">
+        <property name="height">200</property>
+        <property name="text" translatable="yes">4. Name</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="padx">5</property>
+          <property name="pady">5</property>
+          <property name="propagate">True</property>
+          <property name="row">3</property>
+          <property name="sticky">ew</property>
+        </layout>
+        <child>
+          <object class="ttk.Entry" id="SaveName">
+            <property name="font">{Segoe UI} 11 {}</property>
+            <property name="state">normal</property>
+            <property name="takefocus">true</property>
+            <property name="text" translatable="yes">J2PConverted
+</property>
+            <property name="textvariable">string:fout_name</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="NameHint">
+            <property name="font">{Segoe UI} 12 {}</property>
+            <property name="takefocus">false</property>
+            <property name="text" translatable="yes">.pdf</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
       <object class="ttk.Button" id="Convert">
         <property name="command">convert</property>
         <property name="compound">left</property>
@@ -176,7 +222,7 @@
           <property name="padx">0</property>
           <property name="pady">10</property>
           <property name="propagate">True</property>
-          <property name="row">3</property>
+          <property name="row">4</property>
         </layout>
       </object>
     </child>

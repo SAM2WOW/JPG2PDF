@@ -31,6 +31,7 @@ class Application:
             base_path = sys._MEIPASS
         except Exception:
             base_path = os.path.abspath("./source/repos/JPG2PDF/")
+            #/source/repos/JPG2PDF/
 
         return os.path.join(base_path, relative_path)
 
@@ -84,7 +85,7 @@ class Application:
                 
                 pdf.add_page()
                 pdf.image(image, x = 0, y = 0, w = pdf_size[sizecode + ori_s]["w"], h = pdf_size[sizecode + ori_s]["h"], type = 'JPG')
-            pdf.output(str(fout) + "/J2PConverted.pdf", "F")
+            pdf.output(str(fout) + "/" + str(self.builder.get_variable("fout_name").get()) + ".pdf", "F")
 
             #Message
             messagebox.showinfo("Finished!", "PDF file converted!")
@@ -95,8 +96,8 @@ class Application:
 
 root = tk.Tk()
 app = Application(root)
-root.title('JPG2PDF tool v1.0    by Sam Feng')
-#root.iconbitmap(Applicationresource_path("export_icon.png"))
+root.title('JPG2PDF v1.2    by Sam Feng')
+root.iconbitmap("./source/repos/JPG2PDF/pdf_icon.ico")
 root.resizable(False, False)
 
 root.mainloop()
