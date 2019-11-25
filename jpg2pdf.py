@@ -30,7 +30,7 @@ class Application:
             # PyInstaller creates a temp folder and stores path in _MEIPASS
             base_path = sys._MEIPASS
         except Exception:
-            base_path = os.path.abspath("./source/repos/JPG2PDF/")
+            base_path = os.path.abspath("./JPG2PDF/")
             #/source/repos/JPG2PDF/
 
         return os.path.join(base_path, relative_path)
@@ -97,7 +97,7 @@ class Application:
 root = tk.Tk()
 app = Application(root)
 root.title('JPG2PDF v1.2    by Sam Feng')
-root.iconbitmap("./source/repos/JPG2PDF/pdf_icon.ico")
+#root.iconbitmap("./source/repos/JPG2PDF/pdf_icon.ico")
 root.resizable(False, False)
 
 root.mainloop()
