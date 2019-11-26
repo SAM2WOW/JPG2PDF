@@ -9,6 +9,7 @@ import os
 #PDF
 from fpdf import FPDF
 #from PIL import Image
+from PIL import Image
 
 class Application:
     def __init__(self, master):
@@ -50,14 +51,24 @@ class Application:
                 filename = str(f)
                 file_n.append(str(os.path.basename(filename)))
             self.builder.get_variable("selected_jpgs").set(str(file_n))
+        
+        #preset variables
+        self.builder.get_variable("paper_size").set("Letter")
+        self.builder.get_variable("paper_orien").set("Portrait")
+        self.builder.get_variable("paper_marge").set("No_Margin")
+        self.builder.get_variable("paper_scale").set("Stretch")
 
     def add_files(self):
         mask = [("JPG Images","*.jpg")]
         fadd = filedialog.askopenfilenames(parent=root, filetypes=mask, title='Choose your images')
 
-        #add filez and fadd
         global filez
-        filez = filez + fadd
+        #Check if filez is defined
+        try:
+            #add filez and fadd
+            filez = filez + fadd
+        except NameError:
+            filez = fadd
 
         #check if empty
         if filez != None:
@@ -120,13 +131,35 @@ class Application:
                     pxcale = pdf_size[sizecode + ori_s]["w"] * marge
                     pycale = pdf_size[sizecode + ori_s]["h"] * marge
                 else:
-                    img_width, img_height = Image.size(image)
+                    im = Image.open(image)
+                    img_width, img_height = im.size
+
+                    #Calculate dpi
+                    img_dpi_w = img_width / pdf_size[sizecode + ori_s]["w"]
+                    img_dpi_h = img_height / pdf_size[sizecode + ori_s]["h"]
+
                     if img_width >= img_height:
-                        pxcale = 
-                        pycale = 
+                        if ori_s == "P":
+                            img_width = img_width / img_dpi_w
+                            img_height = img_height / img_dpi_w
+                            pxcale = pdf_size[sizecode + ori_s]["w"] * marge
+                            pycale = ( img_width / pxcale ) * img_height * marge
+                        else:
+                            img_width = img_width / img_dpi_w
+                            img_height = img_height / img_dpi_w
+                            pxcale = pdf_size[sizecode + ori_s]["w"] * marge
+                            pycale = ( img_width / pxcale ) * img_height * marge
                     else:
-                        pxcale = 
-                        pycale = 
+                        if ori_s == "L":
+                            img_width = img_width / img_dpi_h
+                            img_height = img_height / img_dpi_h
+                            pycale = pdf_size[sizecode + ori_s]["h"] * marge
+                            pxcale = ( img_height / pycale ) * img_width * marge
+                        else:
+                            img_width = img_width / img_dpi_h
+                            img_height = img_height / img_dpi_h
+                            pycale = pdf_size[sizecode + ori_s]["h"] * marge 
+                            pxcale = ( img_height / pycale ) * img_width * marge
                 
                 pdf.add_page()
                 #Image Settings
@@ -148,7 +181,7 @@ class Application:
 
 root = tk.Tk()
 app = Application(root)
-root.title('JPG2PDF v1.5    by Sam Feng')
+root.title('JPG2PDF v1.5 beta     by Sam Feng')
 root.iconbitmap("./source/repos/JPG2PDF/JPG2PDF/pdf_icon.ico")
 root.resizable(False, False)
 
