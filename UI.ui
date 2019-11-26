@@ -30,6 +30,7 @@
             <property name="state">readonly</property>
             <property name="text" translatable="yes">Choose Location &gt;&gt;&gt;</property>
             <property name="textvariable">string:jpg_loc</property>
+            <property name="width">25</property>
             <layout>
               <property name="column">0</property>
               <property name="padx">5</property>
@@ -43,12 +44,27 @@
         <child>
           <object class="ttk.Button" id="Select_Files">
             <property name="command">open_files</property>
-            <property name="compound">left</property>
             <property name="cursor">hand2</property>
             <property name="image">search.png</property>
-            <property name="text" translatable="yes">Open</property>
+            <property name="underline">0</property>
+            <property name="width">0</property>
             <layout>
               <property name="column">1</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="Add_Files">
+            <property name="command">add_files</property>
+            <property name="cursor">hand2</property>
+            <property name="image">Plus.png</property>
+            <property name="width">0</property>
+            <layout>
+              <property name="column">2</property>
               <property name="padx">5</property>
               <property name="pady">5</property>
               <property name="propagate">True</property>
@@ -94,6 +110,7 @@
             <property name="text" translatable="yes">Choose Location &gt;&gt;&gt;
 </property>
             <property name="textvariable">string:fout_loc</property>
+            <property name="width">25</property>
             <layout>
               <property name="column">0</property>
               <property name="padx">5</property>
@@ -107,12 +124,27 @@
         <child>
           <object class="ttk.Button" id="Select_Location">
             <property name="command">open_locations</property>
-            <property name="compound">left</property>
             <property name="cursor">hand2</property>
             <property name="image">search.png</property>
-            <property name="text" translatable="yes">Open</property>
+            <property name="width">0</property>
             <layout>
               <property name="column">1</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+              <property name="sticky">e</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="Same_Location">
+            <property name="command">same_locations</property>
+            <property name="cursor">hand2</property>
+            <property name="image">arrow.png</property>
+            <property name="width">0</property>
+            <layout>
+              <property name="column">2</property>
               <property name="padx">5</property>
               <property name="pady">5</property>
               <property name="propagate">True</property>
@@ -164,6 +196,34 @@
             </layout>
           </object>
         </child>
+        <child>
+          <object class="ttk.Combobox" id="PaperMarge">
+            <property name="state">readonly</property>
+            <property name="textvariable">string:paper_marge</property>
+            <property name="values">No_Margin Small_Margin Big_Margin</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Combobox" id="PaperScale">
+            <property name="state">readonly</property>
+            <property name="textvariable">string:paper_scale</property>
+            <property name="values">Stretch Fit</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+            </layout>
+          </object>
+        </child>
       </object>
     </child>
     <child>
@@ -182,11 +242,10 @@
         <child>
           <object class="ttk.Entry" id="SaveName">
             <property name="font">{Segoe UI} 11 {}</property>
-            <property name="state">normal</property>
             <property name="takefocus">true</property>
-            <property name="text" translatable="yes">J2PConverted
-</property>
+            <property name="text" translatable="yes">J2PConverted</property>
             <property name="textvariable">string:fout_name</property>
+            <property name="width">31</property>
             <layout>
               <property name="column">0</property>
               <property name="padx">5</property>
