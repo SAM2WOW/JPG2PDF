@@ -10,6 +10,8 @@ import os
 from fpdf import FPDF
 #from PIL import Image
 from PIL import Image
+#Import Sound
+from playsound import playsound
 
 class Application:
     def __init__(self, master):
@@ -36,6 +38,21 @@ class Application:
 
         return os.path.join(base_path, relative_path)
 
+    #preset variables
+    def set_default(self):
+
+        if self.builder.get_variable("paper_size").get() == "":
+            self.builder.get_variable("paper_size").set("Letter")
+
+        if self.builder.get_variable("paper_orien").get() == "":
+            self.builder.get_variable("paper_orien").set("Portrait")
+
+        if self.builder.get_variable("paper_marge").get() == "":
+            self.builder.get_variable("paper_marge").set("No_Margin")
+        
+        if self.builder.get_variable("paper_scale").get() == "":
+            self.builder.get_variable("paper_scale").set("Stretch")
+
     #Functions
     def open_files(self):
         mask = [("JPG Images","*.jpg")]
@@ -52,11 +69,8 @@ class Application:
                 file_n.append(str(os.path.basename(filename)))
             self.builder.get_variable("selected_jpgs").set(str(file_n))
         
-        #preset variables
-        self.builder.get_variable("paper_size").set("Letter")
-        self.builder.get_variable("paper_orien").set("Portrait")
-        self.builder.get_variable("paper_marge").set("No_Margin")
-        self.builder.get_variable("paper_scale").set("Stretch")
+        self.set_default()   #Setting Default Settings
+        self.builder.get_object("convert_btn").config(text='Convert', background='#eafeff')   #Reset Button
 
     def add_files(self):
         mask = [("JPG Images","*.jpg")]
@@ -79,6 +93,9 @@ class Application:
                 filename = str(f)
                 file_n.append(str(os.path.basename(filename)))
             self.builder.get_variable("selected_jpgs").set(str(file_n))
+        
+        self.set_default()   #Setting Default Settings
+        self.builder.get_object("convert_btn").config(text='Convert', background='#eafeff')   #Reset Button
 
     def open_locations(self):
         mask = [("Portable Document Format","*.pdf")]  
@@ -94,16 +111,21 @@ class Application:
             self.builder.get_variable("fout_loc").set(str(fout))
     
     def convert(self):
+
+        #Loading
+        self.builder.get_object("convert_btn").config(text='Converting...', background='#fffda8')
+        
         #Get Setting Size
         papersize = self.builder.get_variable("paper_size").get()
         paperori = self.builder.get_variable("paper_orien").get()
         papermargin = self.builder.get_variable("paper_marge").get()
         paperscale = self.builder.get_variable("paper_scale").get()
+        path = os.path.exists(self.builder.get_variable("fout_loc").get())
 
         #Dictionary
         pdf_size = {'LP': {'w': 8.5, 'h': 11}, 'LL': {'w': 11, 'h': 8.5}, 'AP': {'w': 8.27, 'h': 11.69}, 'AL': {'w': 11.69, 'h': 8.27}}
         
-        if papersize != "" and paperori != "" and papermargin != "" and paperscale != "":
+        if papersize != "" and paperori != "" and papermargin != "" and paperscale != "" and path == True:
                 
             #Convertion
             if paperori == "Portrait":
@@ -139,25 +161,29 @@ class Application:
                     img_dpi_h = img_height / pdf_size[sizecode + ori_s]["h"]
 
                     if img_width >= img_height:
+
+                        #Set DPI
+                        img_width = img_width / img_dpi_w
+                        img_height = img_height / img_dpi_w
+
+                        #Check Orientation
                         if ori_s == "P":
-                            img_width = img_width / img_dpi_w
-                            img_height = img_height / img_dpi_w
                             pxcale = pdf_size[sizecode + ori_s]["w"] * marge
                             pycale = ( img_width / pxcale ) * img_height * marge
                         else:
-                            img_width = img_width / img_dpi_w
-                            img_height = img_height / img_dpi_w
                             pxcale = pdf_size[sizecode + ori_s]["w"] * marge
                             pycale = ( img_width / pxcale ) * img_height * marge
                     else:
+
+                        #Set DPI
+                        img_width = img_width / img_dpi_h
+                        img_height = img_height / img_dpi_h
+                        
+                        #Check Orientation
                         if ori_s == "L":
-                            img_width = img_width / img_dpi_h
-                            img_height = img_height / img_dpi_h
                             pycale = pdf_size[sizecode + ori_s]["h"] * marge
                             pxcale = ( img_height / pycale ) * img_width * marge
                         else:
-                            img_width = img_width / img_dpi_h
-                            img_height = img_height / img_dpi_h
                             pycale = pdf_size[sizecode + ori_s]["h"] * marge 
                             pxcale = ( img_height / pycale ) * img_width * marge
                 
@@ -173,16 +199,23 @@ class Application:
             pdf.output(str(fout) + "/" + str(self.builder.get_variable("fout_name").get()) + ".pdf", "F")
 
             #Message
-            messagebox.showinfo("Finished!", "PDF file converted!")
+            self.builder.get_object("convert_btn").config(text='File Converted!', background='#a9feab')
+            playsound(self.resource_path("message_tone.mp3"))
+            
+
+        elif path == False:
+            messagebox.showerror("No Output Location", "Please pick a valid output location")
+            self.builder.get_object("convert_btn").config(text='Convert', background='#eafeff')   #Reset Button
         else:
-            messagebox.showinfo("No Settings", "Please pick the settings first")
+            messagebox.showerror("No Settings", "Please pick the settings first")
+            self.builder.get_object("convert_btn").config(text='Convert', background='#eafeff')   #Reset Button
             
 
 
 root = tk.Tk()
 app = Application(root)
-root.title('JPG2PDF v1.5 beta     by Sam Feng')
-root.iconbitmap("./source/repos/JPG2PDF/JPG2PDF/pdf_icon.ico")
+root.title('JPG2PDF v1.5 beta     by Sam F')
+root.iconbitmap(Application.resource_path(Application,"pdf_icon.ico"))
 root.resizable(False, False)
 
 root.mainloop()
