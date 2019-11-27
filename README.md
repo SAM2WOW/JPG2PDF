@@ -16,4 +16,4 @@ A simple offline JPG to PDF tool.
 * Change name before saved
 * Works offline
 
-![Alt text](/Screenshot.png)
+![Alt text](/Screenshot1.5b.png)
