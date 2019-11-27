@@ -25,12 +25,12 @@
           <property name="sticky">ew</property>
         </layout>
         <child>
-          <object class="ttk.Entry" id="Location0">
-            <property name="font">{Segoe UI} 11 {}</property>
-            <property name="state">readonly</property>
-            <property name="text" translatable="yes">Choose Location &gt;&gt;&gt;</property>
-            <property name="textvariable">string:jpg_loc</property>
-            <property name="width">34</property>
+          <object class="ttk.Button" id="Select_Files">
+            <property name="command">open_files</property>
+            <property name="compound">left</property>
+            <property name="cursor">hand2</property>
+            <property name="image">search.png</property>
+            <property name="text" translatable="yes">Open</property>
             <layout>
               <property name="column">0</property>
               <property name="padx">5</property>
@@ -42,11 +42,12 @@
           </object>
         </child>
         <child>
-          <object class="ttk.Button" id="Select_Files">
-            <property name="command">open_files</property>
+          <object class="ttk.Button" id="Add_Files">
+            <property name="command">add_files</property>
+            <property name="compound">left</property>
             <property name="cursor">hand2</property>
-            <property name="image">search.png</property>
-            <property name="underline">0</property>
+            <property name="image">PlusC.png</property>
+            <property name="text" translatable="yes">Add Images</property>
             <property name="width">0</property>
             <layout>
               <property name="column">1</property>
@@ -54,37 +55,73 @@
               <property name="pady">5</property>
               <property name="propagate">True</property>
               <property name="row">0</property>
+              <property name="sticky">ew</property>
             </layout>
           </object>
         </child>
         <child>
-          <object class="ttk.Button" id="Add_Files">
-            <property name="command">add_files</property>
+          <object class="tk.Listbox" id="List">
+            <property name="font">{Segoe UI} 12 {}</property>
+            <property name="height">6</property>
+            <property name="relief">flat</property>
+            <property name="width">35</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="columnspan">2</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+              <property name="rowspan">3</property>
+              <property name="sticky">nsew</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="order_up">
+            <property name="command">move_up</property>
             <property name="cursor">hand2</property>
-            <property name="image">Plus.png</property>
+            <property name="image">arrow.png</property>
             <property name="width">0</property>
             <layout>
               <property name="column">2</property>
               <property name="padx">5</property>
               <property name="pady">5</property>
               <property name="propagate">True</property>
-              <property name="row">0</property>
+              <property name="row">2</property>
               <property name="sticky">e</property>
             </layout>
           </object>
         </child>
         <child>
-          <object class="ttk.Label" id="pic_names">
-            <property name="compound">left</property>
-            <property name="image">Jpg_Icon.png</property>
-            <property name="text" translatable="yes">No Image Selected</property>
-            <property name="textvariable">string:selected_jpgs</property>
-            <property name="wraplength">250</property>
+          <object class="ttk.Button" id="order_down">
+            <property name="command">move_down</property>
+            <property name="cursor">hand2</property>
+            <property name="image">arrow_down.png</property>
+            <property name="width">0</property>
             <layout>
-              <property name="column">0</property>
+              <property name="column">2</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
               <property name="propagate">True</property>
-              <property name="row">1</property>
-              <property name="sticky">w</property>
+              <property name="row">3</property>
+              <property name="sticky">e</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="order_delete">
+            <property name="command">file_delete</property>
+            <property name="cursor">hand2</property>
+            <property name="image">Delete.png</property>
+            <property name="width">0</property>
+            <layout>
+              <property name="column">2</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="propagate">True</property>
+              <property name="row">4</property>
+              <property name="sticky">e</property>
             </layout>
           </object>
         </child>
@@ -106,7 +143,6 @@
         <child>
           <object class="ttk.Entry" id="Location1">
             <property name="font">{Segoe UI} 11 {}</property>
-            <property name="state">readonly</property>
             <property name="text" translatable="yes">Choose Location &gt;&gt;&gt;
 </property>
             <property name="textvariable">string:fout_loc</property>
@@ -141,7 +177,7 @@
           <object class="ttk.Button" id="Same_Location">
             <property name="command">same_locations</property>
             <property name="cursor">hand2</property>
-            <property name="image">arrow.png</property>
+            <property name="image">copy.png</property>
             <property name="width">0</property>
             <layout>
               <property name="column">2</property>

@@ -13,6 +13,60 @@ from PIL import Image
 #Import Sound
 from playsound import playsound
 
+#Tooltip
+class CreateToolTip(object):
+    """
+    create a tooltip for a given widget
+    """
+    def __init__(self, widget, text='widget info'):
+        self.waittime = 500     #miliseconds
+        self.wraplength = 180   #pixels
+        self.widget = widget
+        self.text = text
+        self.widget.bind("<Enter>", self.enter)
+        self.widget.bind("<Leave>", self.leave)
+        self.widget.bind("<ButtonPress>", self.leave)
+        self.id = None
+        self.tw = None
+
+    def enter(self, event=None):
+        self.schedule()
+
+    def leave(self, event=None):
+        self.unschedule()
+        self.hidetip()
+
+    def schedule(self):
+        self.unschedule()
+        self.id = self.widget.after(self.waittime, self.showtip)
+
+    def unschedule(self):
+        id = self.id
+        self.id = None
+        if id:
+            self.widget.after_cancel(id)
+
+    def showtip(self, event=None):
+        x = y = 0
+        x, y, cx, cy = self.widget.bbox("insert")
+        x += self.widget.winfo_rootx() + 25
+        y += self.widget.winfo_rooty() + 20
+        # creates a toplevel window
+        self.tw = tk.Toplevel(self.widget)
+        # Leaves only the label and removes the app window
+        self.tw.wm_overrideredirect(True)
+        self.tw.wm_geometry("+%d+%d" % (x, y))
+        label = tk.Label(self.tw, text=self.text, justify='left',
+                       background="#ffffff", relief='solid', borderwidth=1,
+                       wraplength = self.wraplength)
+        label.pack(ipadx=1)
+
+    def hidetip(self):
+        tw = self.tw
+        self.tw= None
+        if tw:
+            tw.destroy()
+
 class Application:
     def __init__(self, master):
 
@@ -27,6 +81,15 @@ class Application:
 
         # Connect method callbacks
         builder.connect_callbacks(self)
+
+        #Tooltip
+        Search_btn0 = CreateToolTip(self.builder.get_object("Select_Files"), "Choose your images")
+        Search_btn1 = CreateToolTip(self.builder.get_object("Select_Location"), "Select output location")
+        add_btn = CreateToolTip(self.builder.get_object("Add_Files"), "Add more images")
+        copy_btn = CreateToolTip(self.builder.get_object("Same_Location"), "Output to source image folder")
+        moveup_btn = CreateToolTip(self.builder.get_object("order_up"), "Move image order up")
+        movedown_btn = CreateToolTip(self.builder.get_object("order_down"), "Move image order down")
+        delete_btn = CreateToolTip(self.builder.get_object("order_delete"), "Delete image")
 
     def resource_path(self, relative_path):
         try:
@@ -53,6 +116,17 @@ class Application:
         if self.builder.get_variable("paper_scale").get() == "":
             self.builder.get_variable("paper_scale").set("Stretch")
 
+    def reset_btn(self):
+        self.builder.get_object("convert_btn").config(text='Convert', background='#eafeff')   #Reset Button
+
+    def reset_listbox(self):
+        #List
+        self.builder.get_object("List").delete(0,'end')
+        for f in filez:
+            filename = str(f)
+            file_n = str(os.path.basename(filename))
+            self.builder.get_object("List").insert("end", file_n)
+
     #Functions
     def open_files(self):
         mask = [("JPG Images","*.jpg")]
@@ -61,16 +135,11 @@ class Application:
 
         #Check if none
         if filez != None:
-            self.builder.get_variable("jpg_loc").set(str(filez))
-            #little Icon
-            file_n = []
-            for f in filez:
-                filename = str(f)
-                file_n.append(str(os.path.basename(filename)))
-            self.builder.get_variable("selected_jpgs").set(str(file_n))
+            self.reset_listbox()    #Reset List
+            
         
         self.set_default()   #Setting Default Settings
-        self.builder.get_object("convert_btn").config(text='Convert', background='#eafeff')   #Reset Button
+        self.reset_btn()
 
     def add_files(self):
         mask = [("JPG Images","*.jpg")]
@@ -86,17 +155,57 @@ class Application:
 
         #check if empty
         if filez != None:
-            self.builder.get_variable("jpg_loc").set(str(filez))
-            #little icon
-            file_n = []
-            for f in filez:
-                filename = str(f)
-                file_n.append(str(os.path.basename(filename)))
-            self.builder.get_variable("selected_jpgs").set(str(file_n))
+            self.reset_listbox()    #Reset List
         
         self.set_default()   #Setting Default Settings
-        self.builder.get_object("convert_btn").config(text='Convert', background='#eafeff')   #Reset Button
+        self.reset_btn()   #Reset Button
 
+    def move_up(self):
+        listbox = self.builder.get_object("List")
+        active = int(listbox.curselection()[0])  #Get selected item
+        old_active = listbox.curselection()
+
+        #Change filez
+        global filez
+        listx = list(filez)
+        listx.insert(active - 1, listx.pop(active))
+        filez = tuple(listx)
+
+        self.reset_listbox()    #Reset List
+        listbox.activate(old_active)    #reactivate
+        
+        self.reset_btn()   #Reset Button
+
+
+    def move_down(self):
+        listbox = self.builder.get_object("List")
+        active = int(listbox.curselection()[0]) #Get selected item
+        old_active = listbox.curselection()
+
+        #Change filez
+        global filez
+        listx = list(filez)
+        listx.insert(active + 1, listx.pop(active))
+        filez = tuple(listx)
+
+        self.reset_listbox()    #Reset List
+        listbox.activate(old_active)    #reactivate
+        
+        self.reset_btn()   #Reset Button
+
+    def file_delete(self):
+        listbox = self.builder.get_object("List")
+        active = int(listbox.curselection()[0])  #Get selected item
+
+        #Change filez
+        global filez
+        listx = list(filez)
+        del listx[active]
+        filez = tuple(listx)
+
+        self.reset_listbox()    #Reset List
+        self.reset_btn()   #Reset Button
+        
     def open_locations(self):
         mask = [("Portable Document Format","*.pdf")]  
         global fout
@@ -197,18 +306,17 @@ class Application:
                 type = 'JPG')
                 
             pdf.output(str(fout) + "/" + str(self.builder.get_variable("fout_name").get()) + ".pdf", "F")
-
-            #Message
-            self.builder.get_object("convert_btn").config(text='File Converted!', background='#a9feab')
-            playsound(self.resource_path("message_tone.mp3"))
+            
+            self.builder.get_object("convert_btn").config(text='File Converted!', background='#a9feab')     #Message
+            playsound(self.resource_path("message_tone.mp3"))   #Sound FX
             
 
         elif path == False:
             messagebox.showerror("No Output Location", "Please pick a valid output location")
-            self.builder.get_object("convert_btn").config(text='Convert', background='#eafeff')   #Reset Button
+            self.reset_btn()   #Reset Button
         else:
             messagebox.showerror("No Settings", "Please pick the settings first")
-            self.builder.get_object("convert_btn").config(text='Convert', background='#eafeff')   #Reset Button
+            self.reset_btn()   #Reset Button
             
 
 
