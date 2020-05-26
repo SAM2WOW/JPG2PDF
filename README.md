@@ -1,4 +1,4 @@
-# JPG2PDF
+# JPG2PDF ![license](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)
 
 A simple offline JPG to PDF tool.
 
